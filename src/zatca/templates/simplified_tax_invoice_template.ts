@@ -68,8 +68,14 @@ const template = /* XML */`
         <cbc:RegistrationName>SET_VAT_NAME</cbc:RegistrationName>
       </cac:PartyLegalEntity>
     </cac:Party>
-  </cac:AccountingSupplierParty>
-  <cac:AccountingCustomerParty></cac:AccountingCustomerParty>
+    </cac:AccountingSupplierParty>
+    <cac:AccountingCustomerParty>
+    <cac:Party>
+        <cac:PartyName>
+        <cbc:Name>SET_CUSTOMER_NAME</cbc:Name>
+        </cac:PartyName>
+    </cac:Party>
+    </cac:AccountingCustomerParty>
 </Invoice>
 `;
 
@@ -119,6 +125,7 @@ export interface ZATCASimplifiedInvoiceProps {
     invoice_serial_number: string,
     issue_date: string,
     issue_time: string,
+    customer_name: string,
     previous_invoice_hash: string,
     line_items?: ZATCASimplifiedInvoiceLineItem[],
     cancelation?: ZATCASimplifiedInvoicCancelation
@@ -153,5 +160,6 @@ export default function populate(props: ZATCASimplifiedInvoiceProps): string {
 
     populated_template = populated_template.replace("SET_VAT_NUMBER", props.egs_info.VAT_number);
     populated_template = populated_template.replace("SET_VAT_NAME", props.egs_info.VAT_name);
+    populated_template = populated_template.replace("SET_CUSTOMER_NAME", props.customer_name);
     return populated_template;
 };

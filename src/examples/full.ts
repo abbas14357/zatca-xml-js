@@ -10,9 +10,7 @@ const line_item: ZATCASimplifiedInvoiceLineItem = {
     quantity: 5,
     tax_exclusive_price: 10,
     VAT_percent: 0.15,
-    other_taxes: [
-        {percent_amount: 1}
-    ],
+    other_taxes: [],
     discounts: [
         {amount: 2, reason: "A discount"},
         {amount: 2, reason: "A second discount"}
@@ -26,7 +24,7 @@ const egsunit: EGSUnitInfo = {
     model: "IOS",
     CRN_number: "454634645645654",
     VAT_name: "Wesam Alzahir",
-    VAT_number: "301121971500003",
+    VAT_number: "399999999900003",
     location: {
         city: "Khobar",
         city_subdivision: "West",
@@ -45,8 +43,9 @@ const invoice = new ZATCASimplifiedTaxInvoice({
         egs_info: egsunit,
         invoice_counter_number: 1,
         invoice_serial_number: "EGS1-886431145-1",
-        issue_date: "2022-03-13",
+        issue_date: "2025-05-02",
         issue_time: "14:40:40",
+        customer_name: "Cash Customer",
         previous_invoice_hash: "NWZlY2ViNjZmZmM4NmYzOGQ5NTI3ODZjNmQ2OTZjNzljMmRiYzIzOWRkNGU5MWI0NjcyOWQ3M2EyN2ZiNTdlOQ==",
         line_items: [
             line_item,
@@ -75,16 +74,22 @@ const main = async () => {
 
         // Sign invoice
         const {signed_invoice_string, invoice_hash, qr} = egs.signInvoice(invoice);
-
+        
+        
         // Check invoice compliance
-        console.log( await egs.checkInvoiceCompliance(signed_invoice_string, invoice_hash) );
+        const complience_response = await egs.checkInvoiceCompliance(signed_invoice_string, invoice_hash)
+        console.log('complience_response:', complience_response.validationResults );
+        console.log('complience_response:', complience_response.reportingStatus );
 
         // Issue production certificate
         const production_request_id = await egs.issueProductionCertificate(compliance_request_id);
         
          // Report invoice production
          // Note: This request currently fails because ZATCA sandbox returns a constant fake production certificate
-        console.log( await egs.reportInvoice(signed_invoice_string, invoice_hash) );
+        const report_response = await egs.reportInvoice(signed_invoice_string, invoice_hash); 
+        // console.log( 'report_response:',report_response.validationResults);
+        console.log( 'report_response:',report_response.reportingStatus);
+        console.log( 'report_response:',report_response);
 
 
     } catch (error: any) {

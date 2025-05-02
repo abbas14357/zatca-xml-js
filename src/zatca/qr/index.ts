@@ -53,6 +53,7 @@ export const generateQR = ({invoice_xml, digital_signature, public_key, certific
         certificate_signature
     ]);
 
+    // console.log('phase 2 qr code:', qr_tlv.toString("base64"));
     return qr_tlv.toString("base64");
 }
 

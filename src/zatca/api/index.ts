@@ -15,15 +15,15 @@ interface ComplianceAPIInterface {
      * @param otp String Tax payer provided OTP from Fatoora portal
      * @returns issued_certificate: string, api_secret: string, or throws on error.
      */
-    issueCertificate: (csr: string, otp: string) => Promise<{issued_certificate: string, api_secret: string, request_id: string}>
+    issueCertificate: (csr: string, otp: string) => Promise<{ issued_certificate: string, api_secret: string, request_id: string }>
 
-     /**
-     * Checks compliance of a signed ZATCA XML.
-     * @param signed_xml_string String.
-     * @param invoice_hash String.
-     * @param egs_uuid String.
-     * @returns Any status.
-     */
+    /**
+    * Checks compliance of a signed ZATCA XML.
+    * @param signed_xml_string String.
+    * @param invoice_hash String.
+    * @param egs_uuid String.
+    * @returns Any status.
+    */
     checkInvoiceCompliance: (signed_xml_string: string, invoice_hash: string, egs_uuid: string) => Promise<any>
 }
 
@@ -34,23 +34,23 @@ interface ProductionAPIInterface {
      * @param compliance_request_id String compliance_request_id
      * @returns issued_certificate: string, api_secret: string, or throws on error.
      */
-    issueCertificate: (compliance_request_id: string) => Promise<{issued_certificate: string, api_secret: string, request_id: string}>
+    issueCertificate: (compliance_request_id: string) => Promise<{ issued_certificate: string, api_secret: string, request_id: string }>
 
-     /**
-     * Report signed ZATCA XML.
-     * @param signed_xml_string String.
-     * @param invoice_hash String.
-     * @param egs_uuid String.
-     * @returns Any status.
-     */
-      reportInvoice: (signed_xml_string: string, invoice_hash: string, egs_uuid: string) => Promise<any>
+    /**
+    * Report signed ZATCA XML.
+    * @param signed_xml_string String.
+    * @param invoice_hash String.
+    * @param egs_uuid String.
+    * @returns Any status.
+    */
+    reportInvoice: (signed_xml_string: string, invoice_hash: string, egs_uuid: string) => Promise<any>
 
 }
 
 
 class API {
 
-    constructor () {
+    constructor() {
     }
 
 
@@ -60,7 +60,7 @@ class API {
             const certificate_stripped = cleanUpCertificateString(certificate);
             const basic = Buffer.from(`${Buffer.from(certificate_stripped).toString("base64")}:${secret}`).toString("base64");
             return {
-                "Authorization": `Basic ${basic}`   
+                "Authorization": `Basic ${basic}`
             };
         }
         return {};
@@ -69,45 +69,66 @@ class API {
     compliance(certificate?: string, secret?: string): ComplianceAPIInterface {
         const auth_headers = this.getAuthHeaders(certificate, secret);
 
-        const issueCertificate = async (csr: string, otp: string): Promise<{issued_certificate: string, api_secret: string, request_id: string}> => {
+        const issueCertificate = async (csr: string, otp: string): Promise<{ issued_certificate: string, api_secret: string, request_id: string }> => {
             const headers = {
                 "Accept-Version": settings.API_VERSION,
                 OTP: otp
             };
 
             const response = await axios.post(`${settings.SANDBOX_BASEURL}/compliance`,
-                {csr: Buffer.from(csr).toString("base64")},
-                {headers: {...auth_headers, ...headers}}
+                { csr: Buffer.from(csr).toString("base64") },
+                { headers: { ...auth_headers, ...headers } }
             );
-                        
+
             if (response.status != 200) throw new Error("Error issuing a compliance certificate.");
 
             let issued_certificate = Buffer.from(response.data.binarySecurityToken, "base64").toString();
             issued_certificate = `-----BEGIN CERTIFICATE-----\n${issued_certificate}\n-----END CERTIFICATE-----`;
             const api_secret = response.data.secret;
-            
-            return {issued_certificate, api_secret, request_id: response.data.requestID};
+
+            return { issued_certificate, api_secret, request_id: response.data.requestID };
         }
 
         const checkInvoiceCompliance = async (signed_xml_string: string, invoice_hash: string, egs_uuid: string): Promise<any> => {
-            const headers = {
-                "Accept-Version": settings.API_VERSION,
-                "Accept-Language": "en",
-            };
+            try {
 
-            const response = await axios.post(`${settings.SANDBOX_BASEURL}/compliance/invoices`,
-                {
-                    invoiceHash: invoice_hash,
-                    uuid: egs_uuid,
-                    invoice: Buffer.from(signed_xml_string).toString("base64")
-                },
-                {headers: {...auth_headers, ...headers}}
-            );
-                        
-            if (response.status != 200) throw new Error("Error in compliance check.");
-            return response.data;
+                const headers = {
+                    "Accept-Version": settings.API_VERSION,
+                    "Accept-Language": "en",
+                };
+
+                const response = await axios.post(`${settings.SANDBOX_BASEURL}/compliance/invoices`,
+                    {
+                        invoiceHash: invoice_hash,
+                        uuid: egs_uuid,
+                        invoice: Buffer.from(signed_xml_string).toString("base64")
+                    },
+                    { headers: { ...auth_headers, ...headers } }
+                );
+
+                if (response.status != 200 && response.status != 202) throw new Error("Error in compliance check.");
+                return response.data;
+
+            } catch (error) {
+
+                if (axios.isAxiosError(error)) {
+                    // const responseData = error.response?.data;
+                    const responseData = error.response?.data as { validationResults?: any };
+
+                    if (responseData?.validationResults) {
+                        console.error("ZATCA validation status:", responseData.validationResults.status);
+                        console.error("Info Messages:", responseData.validationResults.infoMessages);
+                        console.error("Warning Messages:", responseData.validationResults.warningMessages);
+                        console.error("Error Messages:", responseData.validationResults.errorMessages);
+                    } else {
+                        console.error("Response data:", responseData);
+                    }
+                } else {
+                    console.error("Unknown error:", error);
+                }
+            }
         }
-        
+
         return {
             issueCertificate,
             checkInvoiceCompliance
@@ -118,43 +139,63 @@ class API {
     production(certificate?: string, secret?: string): ProductionAPIInterface {
         const auth_headers = this.getAuthHeaders(certificate, secret);
 
-        const issueCertificate = async (compliance_request_id: string): Promise<{issued_certificate: string, api_secret: string, request_id: string}> => {
+        const issueCertificate = async (compliance_request_id: string): Promise<{ issued_certificate: string, api_secret: string, request_id: string }> => {
             const headers = {
                 "Accept-Version": settings.API_VERSION
             };
 
             const response = await axios.post(`${settings.SANDBOX_BASEURL}/production/csids`,
-                {compliance_request_id: compliance_request_id},
-                {headers: {...auth_headers, ...headers}}
+                { compliance_request_id: compliance_request_id },
+                { headers: { ...auth_headers, ...headers } }
             );
-                        
+
             if (response.status != 200) throw new Error("Error issuing a production certificate.");
 
             let issued_certificate = Buffer.from(response.data.binarySecurityToken, "base64").toString();
             issued_certificate = `-----BEGIN CERTIFICATE-----\n${issued_certificate}\n-----END CERTIFICATE-----`;
             const api_secret = response.data.secret;
 
-            return {issued_certificate, api_secret, request_id: response.data.requestID};
+            return { issued_certificate, api_secret, request_id: response.data.requestID };
         }
 
         const reportInvoice = async (signed_xml_string: string, invoice_hash: string, egs_uuid: string): Promise<any> => {
-            const headers = {
-                "Accept-Version": settings.API_VERSION,
-                "Accept-Language": "en",
-                "Clearance-Status": "0"
-            };
+            try {
 
-            const response = await axios.post(`${settings.SANDBOX_BASEURL}/invoices/reporting/single`,
-                {
-                    invoiceHash: invoice_hash,
-                    uuid: egs_uuid,
-                    invoice: Buffer.from(signed_xml_string).toString("base64")
-                },
-                {headers: {...auth_headers, ...headers}}
-            );
-                        
-            if (response.status != 200) throw new Error("Error in reporting invoice.");
-            return response.data;
+                const headers = {
+                    "Accept-Version": settings.API_VERSION,
+                    "Accept-Language": "en",
+                    "Clearance-Status": "0"
+                };
+
+                const response = await axios.post(`${settings.SANDBOX_BASEURL}/invoices/reporting/single`,
+                    {
+                        invoiceHash: invoice_hash,
+                        uuid: egs_uuid,
+                        invoice: Buffer.from(signed_xml_string).toString("base64")
+                    },
+                    { headers: { ...auth_headers, ...headers } }
+                );
+
+                if (response.status != 200 && response.status != 202) throw new Error("Error in reporting invoice.");
+                return response.data;
+
+            } catch (error) {
+                if (axios.isAxiosError(error)) {
+                    // const responseData = error.response?.data;
+                    const responseData = error.response?.data as { validationResults?: any };
+
+                    if (responseData?.validationResults) {
+                        console.error("ZATCA validation status:", responseData.validationResults.status);
+                        console.error("Info Messages:", responseData.validationResults.infoMessages);
+                        console.error("Warning Messages:", responseData.validationResults.warningMessages);
+                        console.error("Error Messages:", responseData.validationResults.errorMessages);
+                    } else {
+                        console.error("Response data:", responseData);
+                    }
+                } else {
+                    console.error("Unknown error:", error);
+                }
+            }
         }
 
         return {
@@ -162,7 +203,7 @@ class API {
             reportInvoice
         }
     }
-  
+
 
 }
 
