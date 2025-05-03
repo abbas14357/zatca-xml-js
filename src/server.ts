@@ -58,8 +58,6 @@ app.get('/api/issuecompliancecert', async (req, res) => {
     res.json({
       status: 'OK',
       compliance_request_id
-      // certificate: egs.get().compliance_certificate,
-      // private_key: egs.get().compliance_api_secret,
     });
   } catch (err: any) {
     res.status(500).json({ error: err.message ?? err });
