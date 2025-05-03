@@ -2,12 +2,12 @@
   "name": "zatca-xml-js",
   "version": "0.1.9",
   "description": "An implementation of Saudi Arabia ZATCA's E-Invoicing requirements, processes, and standards.",
-  "main": "lib/index.js",
+  "main": "dist/server.js",
   "files": [
     "lib/**/*"
   ],
   "scripts": {
-    "build": "tsc --project tsconfig.build.json",
+    "build": "tsc",
     "test": "tsc && node testing_lib/tests/test.js",
     "example": "tsc --project tsconfig.build.json && node lib/examples/full.js",
     "prepare": "npm run build",
