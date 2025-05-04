@@ -54,10 +54,12 @@ app.get('/api/issuecompliancecert', async (req, res) => {
     const egs = new EGS(egsunit);
     await egs.generateNewKeysAndCSR(false, 'Multi-Techno');
     const compliance_request_id = await egs.issueComplianceCertificate('123345');
-
+    
     res.json({
       status: 'OK',
-      compliance_request_id
+      compliance_request_id,
+      compliance_certificate: egs.get().compliance_certificate,
+      compliance_api_secret: egs.get().compliance_api_secret
     });
   } catch (err: any) {
     res.status(500).json({ error: err.message ?? err });
