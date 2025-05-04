@@ -32,10 +32,10 @@ app.get('/api/issuecompliancecert', async (req, res) => {
   //     branch_industry: "Food"
   // };
 
-  const uuid = uuidv4();
+  const uuid_p = uuidv4();
 
     const egsunit: EGSUnitInfo = {
-      uuid: uuid,
+      uuid: uuid_p,
       custom_id: req.query.custom_id as string,
       model: req.query.model as string,
       CRN_number: req.query.crn as string,
@@ -59,7 +59,7 @@ app.get('/api/issuecompliancecert', async (req, res) => {
     
     res.json({
       status: 'OK',
-      uuid: uuid,
+      uuid: uuid_p,
       compliance_request_id,
       compliance_certificate: egs.get().compliance_certificate,
       compliance_api_secret: egs.get().compliance_api_secret
