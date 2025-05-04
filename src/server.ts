@@ -32,6 +32,8 @@ app.get('/api/issuecompliancecert', async (req, res) => {
   //     branch_industry: "Food"
   // };
 
+  console.log('request parameters:', req.query);
+
   const uuid_p = uuidv4();
   const is_production_request = req.query.is_production ? req.query.is_production : false;
   const request_otp = req.query.request_otp ? req.query.request_otp : '123345'; 
