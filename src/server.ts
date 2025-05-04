@@ -123,7 +123,6 @@ app.get('/api/issueproductioncert', async (req, res) => {
     res.status(500).json({ error: err.message ?? err });
   }
 
-
 });
 
 app.listen(port, () => {
