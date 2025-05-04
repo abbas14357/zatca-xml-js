@@ -33,6 +33,8 @@ app.get('/api/issuecompliancecert', async (req, res) => {
   // };
 
   const uuid_p = uuidv4();
+  const is_production_request = req.query.is_production ? req.query.is_production : false;
+  const request_otp = req.query.request_otp ? req.query.request_otp : '123345'; 
 
     const egsunit: EGSUnitInfo = {
       uuid: uuid_p,
@@ -54,8 +56,8 @@ app.get('/api/issuecompliancecert', async (req, res) => {
     };
 
     const egs = new EGS(egsunit);
-    await egs.generateNewKeysAndCSR(true, 'Multi-Techno');
-    const compliance_request_id = await egs.issueComplianceCertificate('123345');
+    await egs.generateNewKeysAndCSR(Boolean(is_production_request) , 'Multi-Techno');
+    const compliance_request_id = await egs.issueComplianceCertificate(String(request_otp));
     
     res.json({
       status: 'OK',
