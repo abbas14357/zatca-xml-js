@@ -73,7 +73,7 @@ const main = async () => {
         const compliance_request_id = await egs.issueComplianceCertificate("123345");
 
         // Sign invoice
-        const {signed_invoice_string, invoice_hash, qr} = egs.signInvoice(invoice);
+        const {signed_invoice_string, invoice_hash, qr} = egs.signInvoice(invoice,false);
         
         
         // Check invoice compliance
