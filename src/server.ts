@@ -216,7 +216,7 @@ app.post('/api/signinvoice', async (req, res) => {
     });
 
     // Sign invoice
-    const {signed_invoice_string, invoice_hash, qr} = egs.signInvoice(invoice,false);
+    const { signed_invoice_string, invoice_hash, qr } = egs.signInvoice(invoice, false);
 
     console.log('signed_invoice_string:', signed_invoice_string);
 
@@ -228,6 +228,55 @@ app.post('/api/signinvoice', async (req, res) => {
     });
 
 
+  } catch (err: any) {
+    console.error('API error:', err);
+    res.status(500).json({ status: 'error', message: err.message || 'Internal Server Error' });
+  }
+});
+
+app.post('/api/invoicecompliance', async (req, res) => {
+  try {
+    console.log('Sign Invoice request body::', req.body);
+
+    const egsunit: EGSUnitInfo = {
+      uuid: req.body.uuid as string,
+      custom_id: req.body.custom_id as string,
+      model: req.body.model as string,
+      CRN_number: req.body.crn as string,
+      VAT_name: req.body.vat_name as string,
+      VAT_number: req.body.vat_number as string,
+      location: {
+        city: req.body.city as string,
+        city_subdivision: req.body.subdivision as string,
+        street: req.body.street as string,
+        plot_identification: req.body.plot as string,
+        building: req.body.building as string,
+        postal_zone: req.body.postal as string,
+      },
+      branch_name: req.body.branch_name as string,
+      branch_industry: req.body.industry as string
+    };
+
+    const egs = new EGS(egsunit);
+
+    // Inject cert data into EGS if available
+    if (req.body.private_key) {
+      egs.set({ private_key: req.body.private_key });
+    }
+
+    if (req.body.csr) {
+      egs.set({ csr: req.body.csr });
+    }
+
+    if (req.body.compliance_certificate) {
+      egs.set({ compliance_certificate: req.body.compliance_certificate });
+    }
+
+    if (req.body.compliance_api_secret) {
+      egs.set({ compliance_api_secret: req.body.compliance_api_secret });
+    }
+
+    
   } catch (err: any) {
     console.error('API error:', err);
     res.status(500).json({ status: 'error', message: err.message || 'Internal Server Error' });
