@@ -9,7 +9,7 @@ const port = process.env.PORT || 3000;
 app.use(express.json()); // for POST support
 
 // GET endpoint to generate keys and issue cert
-app.get('/api/issuecompliancecert', async (req, res) => {
+app.post('/api/issuecompliancecert', async (req, res) => {
   try {
 
     // Default Values for Sample  
@@ -32,29 +32,29 @@ app.get('/api/issuecompliancecert', async (req, res) => {
     //     branch_industry: "Food"
     // };
 
-    console.log('issue compliance certificate request parameters:', req.query);
+    console.log('issue compliance certificate request parameters:', req.body);
 
-    const uuid_p = req.query.uuid ? req.query.uuid : uuidv4();
-    const is_production_request = req.query.is_production ? req.query.is_production : false;
-    const request_otp = req.query.request_otp ? req.query.request_otp : '123345';
+    const uuid_p = req.body.uuid ? req.body.uuid : uuidv4();
+    const is_production_request = req.body.is_production ? req.body.is_production : false;
+    const request_otp = req.body.request_otp ? req.body.request_otp : '123345';
 
     const egsunit: EGSUnitInfo = {
       uuid: uuid_p as string,
-      custom_id: req.query.custom_id as string,
-      model: req.query.model as string,
-      CRN_number: req.query.crn as string,
-      VAT_name: req.query.vat_name as string,
-      VAT_number: req.query.vat_number as string,
+      custom_id: req.body.custom_id as string,
+      model: req.body.model as string,
+      CRN_number: req.body.crn as string,
+      VAT_name: req.body.vat_name as string,
+      VAT_number: req.body.vat_number as string,
       location: {
-        city: req.query.city as string,
-        city_subdivision: req.query.subdivision as string,
-        street: req.query.street as string,
-        plot_identification: req.query.plot as string,
-        building: req.query.building as string,
-        postal_zone: req.query.postal as string,
+        city: req.body.city as string,
+        city_subdivision: req.body.subdivision as string,
+        street: req.body.street as string,
+        plot_identification: req.body.plot as string,
+        building: req.body.building as string,
+        postal_zone: req.body.postal as string,
       },
-      branch_name: req.query.branch_name as string,
-      branch_industry: req.query.industry as string,
+      branch_name: req.body.branch_name as string,
+      branch_industry: req.body.industry as string,
     };
 
     const egs = new EGS(egsunit);
@@ -72,7 +72,8 @@ app.get('/api/issuecompliancecert', async (req, res) => {
     });
 
   } catch (err: any) {
-    res.status(500).json({ error: err.message ?? err });
+    console.error('API error:', err);
+    res.status(500).json({ status: 'error', message: err.message || 'Internal Server Error' });
   }
 });
 
@@ -120,12 +121,6 @@ app.post('/api/issueproductioncert', async (req, res) => {
       egs.set({ compliance_api_secret: req.body.compliance_api_secret });
     }
     const compliance_request_id = req.body.compliance_request_id;
-
-    // for testing
-    // const is_production_request = req.body.is_production ? req.body.is_production : false;
-    // const request_otp = req.body.request_otp ? req.body.request_otp : '123345';
-    // await egs.generateNewKeysAndCSR(Boolean(is_production_request), 'Multi-Techno');
-    // const compliance_request_id = await egs.issueComplianceCertificate(String(request_otp));
 
     const production_request_id = await egs.issueProductionCertificate(String(compliance_request_id));
 
