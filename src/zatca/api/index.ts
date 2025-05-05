@@ -67,14 +67,15 @@ class API {
     }
 
     compliance(certificate?: string, secret?: string): ComplianceAPIInterface {
-        const auth_headers = this.getAuthHeaders(certificate, secret);
+        
 
         const issueCertificate = async (csr: string, otp: string): Promise<{ issued_certificate: string, api_secret: string, request_id: string }> => {
             const headers = {
                 "Accept-Version": settings.API_VERSION,
                 OTP: otp
             };
-
+            
+            const auth_headers = this.getAuthHeaders(certificate, secret);
             const response = await axios.post(`${settings.SANDBOX_BASEURL}/compliance`,
                 { csr: Buffer.from(csr).toString("base64") },
                 { headers: { ...auth_headers, ...headers } }
@@ -99,7 +100,9 @@ class API {
 
                 console.log('uuid:', egs_uuid);
                 console.log('invoiceHash', invoice_hash);
-
+                console.log('certificate',certificate);
+                
+                const auth_headers = this.getAuthHeaders(certificate, secret);
                 const response = await axios.post(`${settings.SANDBOX_BASEURL}/compliance/invoices`,
                     {
                         invoiceHash: invoice_hash,
