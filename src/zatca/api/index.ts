@@ -98,10 +98,6 @@ class API {
                     "Accept-Language": "en",
                 };
 
-                console.log('uuid:', egs_uuid);
-                console.log('invoiceHash', invoice_hash);
-                console.log('certificate',certificate);
-                
                 const auth_headers = this.getAuthHeaders(certificate, secret);
                 const response = await axios.post(`${settings.SANDBOX_BASEURL}/compliance/invoices`,
                     {
@@ -111,8 +107,6 @@ class API {
                     },
                     { headers: { ...auth_headers, ...headers } }
                 );
-                
-                console.log('response.data:', response.data);
 
                 if (response.status != 200 && response.status != 202) throw new Error("Error in compliance check.");
                 return response.data;
