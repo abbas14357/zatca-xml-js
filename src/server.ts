@@ -113,8 +113,8 @@ app.get('/api/issueproductioncert', async (req, res) => {
     // for testing
     const is_production_request = req.query.is_production ? req.query.is_production : false;
     const request_otp = req.query.request_otp ? req.query.request_otp : '123345';
-    await egs.generateNewKeysAndCSR(Boolean(is_production_request), 'Multi-Techno');
-    const compliance_request_id = await egs.issueComplianceCertificate(String(request_otp));
+    await egs.generateNewKeysAndCSR(false, 'Multi-Techno');
+    const compliance_request_id = await egs.issueComplianceCertificate('123345');
 
     const production_request_id = await egs.issueProductionCertificate(String(compliance_request_id));
 
