@@ -98,7 +98,7 @@ class API {
                 };
 
                 console.log('before api:', egs_uuid);
-                
+
                 const response = await axios.post(`${settings.SANDBOX_BASEURL}/compliance/invoices`,
                     {
                         invoiceHash: invoice_hash,
@@ -125,7 +125,7 @@ class API {
                         console.error("Warning Messages:", responseData.validationResults.warningMessages);
                         console.error("Error Messages:", responseData.validationResults.errorMessages);
                     } else {
-                        console.error("Response data:", responseData);
+                        console.error("Response data:", error);
                     }
                 } else {
                     console.error("Unknown error:", error);
