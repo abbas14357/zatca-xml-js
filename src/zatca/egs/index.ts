@@ -176,7 +176,7 @@ export class EGS {
     async issueComplianceCertificate(OTP: string): Promise<string> {
         if (!this.egs_info.csr) throw new Error("EGS needs to generate a CSR first.");
 
-        const issued_data = await this.api.compliance().issueCertificate(this.egs_info.csr, OTP);
+        const issued_data = await this.api.compliance(this.egs_info.compliance_certificate, this.egs_info.compliance_api_secret).issueCertificate(this.egs_info.csr, OTP);
         this.egs_info.compliance_certificate = issued_data.issued_certificate;
         this.egs_info.compliance_api_secret = issued_data.api_secret;
 
