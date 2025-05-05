@@ -557,6 +557,7 @@ app.post('/api/invoicecompliance', async (req, res) => {
     // console.log('complience_response:', complience_response.validationResults );
     // console.log('complience_response:', complience_response.reportingStatus );
 
+    console.log(complience_response);
 
     res.json({
 
