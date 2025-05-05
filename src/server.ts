@@ -77,42 +77,53 @@ app.get('/api/issuecompliancecert', async (req, res) => {
 });
 
 //  Issue Product Certificate
-app.get('/api/issueproductioncert', async (req, res) => {
+app.post('/api/issueproductioncert', async (req, res) => {
 
   try {
-    console.log('issue production certificate request parameters:', req.query);
+    console.log('issue production certificate request parameters:', req.body);
 
     const egsunit: EGSUnitInfo = {
-      uuid: req.query.uuid as string,
-      custom_id: req.query.custom_id as string,
-      model: req.query.model as string,
-      CRN_number: req.query.crn as string,
-      VAT_name: req.query.vat_name as string,
-      VAT_number: req.query.vat_number as string,
+      uuid: req.body.uuid as string,
+      custom_id: req.body.custom_id as string,
+      model: req.body.model as string,
+      CRN_number: req.body.crn as string,
+      VAT_name: req.body.vat_name as string,
+      VAT_number: req.body.vat_number as string,
       location: {
-        city: req.query.city as string,
-        city_subdivision: req.query.subdivision as string,
-        street: req.query.street as string,
-        plot_identification: req.query.plot as string,
-        building: req.query.building as string,
-        postal_zone: req.query.postal as string,
+        city: req.body.city as string,
+        city_subdivision: req.body.subdivision as string,
+        street: req.body.street as string,
+        plot_identification: req.body.plot as string,
+        building: req.body.building as string,
+        postal_zone: req.body.postal as string,
       },
-      branch_name: req.query.branch_name as string,
-      branch_industry: req.query.industry as string,
-
-      // private_key: req.query.private_key as string,
-      // csr: req.query.csr as string,
-      // compliance_certificate: req.query.compliance_certificate as string,
-      // compliance_api_secret: req.query.compliance_api_secret as string
+      branch_name: req.body.branch_name as string,
+      branch_industry: req.body.industry as string
     };
 
     const egs = new EGS(egsunit);
 
-    // const compliance_request_id = req.query.compliance_request_id;
-    
+    // Inject cert data into EGS if available
+    if (req.body.private_key) {
+      egs.set({ private_key: req.body.private_key });
+    }
+
+    if (req.body.csr) {
+      egs.set({ csr: req.body.csr });
+    }
+
+    if (req.body.compliance_certificate) {
+      egs.set({ compliance_certificate: req.body.compliance_certificate });
+    }
+
+    if (req.body.compliance_api_secret) {
+      egs.set({ compliance_api_secret: req.body.compliance_api_secret });
+    }
+    // const compliance_request_id = req.body.compliance_request_id;
+
     // for testing
-    const is_production_request = req.query.is_production ? req.query.is_production : false;
-    const request_otp = req.query.request_otp ? req.query.request_otp : '123345';
+    const is_production_request = req.body.is_production ? req.body.is_production : false;
+    const request_otp = req.body.request_otp ? req.body.request_otp : '123345';
     await egs.generateNewKeysAndCSR(false, 'Multi-Techno');
     const compliance_request_id = await egs.issueComplianceCertificate('123345');
 
@@ -126,7 +137,8 @@ app.get('/api/issueproductioncert', async (req, res) => {
     });
 
   } catch (err: any) {
-    res.status(500).json({ error: err.message ?? err });
+    console.error('API error:', err);
+    res.status(500).json({ status: 'error', message: err.message || 'Internal Server Error' });
   }
 
 });
