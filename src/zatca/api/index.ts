@@ -97,6 +97,8 @@ class API {
                     "Accept-Language": "en",
                 };
 
+                console.log('before api:', egs_uuid);
+                
                 const response = await axios.post(`${settings.SANDBOX_BASEURL}/compliance/invoices`,
                     {
                         invoiceHash: invoice_hash,
@@ -107,7 +109,7 @@ class API {
                 );
                 
                 console.log('response.data:', response.data);
-                
+
                 if (response.status != 200 && response.status != 202) throw new Error("Error in compliance check.");
                 return response.data;
 
