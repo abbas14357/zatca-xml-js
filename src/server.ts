@@ -276,15 +276,15 @@ app.post('/api/invoicecompliance', async (req, res) => {
       egs.set({ compliance_api_secret: req.body.compliance_api_secret });
     }
 
-    const signed_invoice_string = req.body.signed_invoice_string;
-    const invoice_hash = req.body.invoice_hash;
+    // const signed_invoice_string = req.body.signed_invoice_string;
+    // const invoice_hash = req.body.invoice_hash;
 
     // Check invoice compliance
     // const complience_response = await egs.checkInvoiceCompliance(signed_invoice_string, invoice_hash)
     // console.log('complience_response:', complience_response.validationResults );
     // console.log('complience_response:', complience_response.reportingStatus );
 
-    
+
     res.json({
       compliance_reporting_status: '',
       compliance_validation_result: ''
