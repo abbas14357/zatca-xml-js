@@ -287,7 +287,7 @@ app.post('/api/invoicecompliance', async (req, res) => {
 
     res.json({
       compliance_reporting_status: complience_response.reportingStatus,
-      compliance_validation_result: complience_response.validationResults
+      compliance_validation_result: complience_response
     });
 
   } catch (err: any) {
