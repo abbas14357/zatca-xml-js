@@ -80,7 +80,7 @@ app.get('/api/issuecompliancecert', async (req, res) => {
 app.post('/api/issueproductioncert', async (req, res) => {
 
   try {
-    console.log('issue production certificate request parameters:', req.body);
+    console.log('issue production certificate request body:', req.body);
 
     const egsunit: EGSUnitInfo = {
       uuid: req.body.uuid as string,
@@ -119,13 +119,13 @@ app.post('/api/issueproductioncert', async (req, res) => {
     if (req.body.compliance_api_secret) {
       egs.set({ compliance_api_secret: req.body.compliance_api_secret });
     }
-    // const compliance_request_id = req.body.compliance_request_id;
+    const compliance_request_id = req.body.compliance_request_id;
 
     // for testing
-    const is_production_request = req.body.is_production ? req.body.is_production : false;
-    const request_otp = req.body.request_otp ? req.body.request_otp : '123345';
-    await egs.generateNewKeysAndCSR(false, 'Multi-Techno');
-    const compliance_request_id = await egs.issueComplianceCertificate('123345');
+    // const is_production_request = req.body.is_production ? req.body.is_production : false;
+    // const request_otp = req.body.request_otp ? req.body.request_otp : '123345';
+    // await egs.generateNewKeysAndCSR(Boolean(is_production_request), 'Multi-Techno');
+    // const compliance_request_id = await egs.issueComplianceCertificate(String(request_otp));
 
     const production_request_id = await egs.issueProductionCertificate(String(compliance_request_id));
 
