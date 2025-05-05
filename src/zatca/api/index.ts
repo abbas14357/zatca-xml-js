@@ -97,7 +97,8 @@ class API {
                     "Accept-Language": "en",
                 };
 
-                console.log('before api:', egs_uuid);
+                console.log('uuid:', egs_uuid);
+                console.log('invoiceHash', invoice_hash);
 
                 const response = await axios.post(`${settings.SANDBOX_BASEURL}/compliance/invoices`,
                     {
