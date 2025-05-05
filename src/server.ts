@@ -100,10 +100,10 @@ app.get('/api/issueproductioncert', async (req, res) => {
       branch_name: req.query.branch_name as string,
       branch_industry: req.query.industry as string,
 
-      private_key: req.query.private_key as string,
-      csr: req.query.csr as string,
-      compliance_certificate: req.query.compliance_certificate as string,
-      compliance_api_secret: req.query.compliance_api_secret as string
+      // private_key: req.query.private_key as string,
+      // csr: req.query.csr as string,
+      // compliance_certificate: req.query.compliance_certificate as string,
+      // compliance_api_secret: req.query.compliance_api_secret as string
     };
 
     const egs = new EGS(egsunit);
