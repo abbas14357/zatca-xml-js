@@ -139,10 +139,11 @@ app.post('/api/issueproductioncert', async (req, res) => {
 
 });
 
+//  Sign Invocie
 app.post('/api/signinvoice', async (req, res) => {
 
   try {
-    console.log('Sign Invoice request body:', req.body);
+    console.log('Sign Invoice request body::', req.body);
 
     const egsunit: EGSUnitInfo = {
       uuid: req.body.uuid as string,
