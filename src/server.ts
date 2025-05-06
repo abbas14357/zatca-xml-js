@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { EGS, EGSUnitInfo } from './zatca/egs';
 import { ZATCASimplifiedTaxInvoice } from './zatca/ZATCASimplifiedTaxInvoice';
 import { ZATCASimplifiedInvoiceLineItem } from './zatca/templates/simplified_tax_invoice_template';
+import { replace } from 'lodash';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -509,7 +510,7 @@ app.post('/api/signinvoice', async (req, res) => {
 
 app.post('/api/invoicecompliance', async (req, res) => {
   try {
-    console.log('invoice compliance body:', req.body);
+    console.log('invoice compliance body:', req.body.compliance_certificate);
 
     const egsunit: EGSUnitInfo = {
       uuid: req.body.uuid as string,
@@ -550,8 +551,11 @@ app.post('/api/invoicecompliance', async (req, res) => {
       "-----END CERTIFICATE-----";
     
     console.log('compliance_certificate 2:', compliance_certificate);
-      
-    egs.set({ compliance_certificate: req.body.compliance_certificate });
+
+    const compliance_certificate3 = replace(req.body.compliance_certificate, '\r', '');
+
+    console.log('compliance_certificate 3:', compliance_certificate3);
+    egs.set({ compliance_certificate: req.body.compliance_certificate3 });
 
     if (req.body.compliance_api_secret) {
       egs.set({ compliance_api_secret: req.body.compliance_api_secret });
