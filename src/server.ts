@@ -557,13 +557,19 @@ app.post('/api/invoicecompliance', async (req, res) => {
 
     // Check invoice compliance
     const complience_response = await egs.checkInvoiceCompliance(sign_invpoice, invoice_hash);
-    console.log('complience validationResults:', complience_response.validationResults);
-    console.log('complience reportingStatus:', complience_response.reportingStatus);
+    
+    
+    
+    const rep_status = complience_response.reportingStatus;
+    const rep_result = complience_response.validationResults;
+
+    console.log('complience reportingStatus:', rep_status);
+    console.log('complience validationResults:', rep_result);
 
     res.json({
 
-      compliance_reporting_status: complience_response.reportingStatus,
-      compliance_validation_result: complience_response.validationResults.warningMessages
+      compliance_reporting_status: rep_status,
+      compliance_validation_result: rep_result
 
     });
 
