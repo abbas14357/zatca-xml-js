@@ -569,7 +569,7 @@ app.post('/api/invoicecompliance', async (req, res) => {
     res.json({
 
       compliance_reporting_status: rep_status,
-      compliance_validation_result: rep_result
+      compliance_validation_result: JSON.stringify(rep_result)
 
     });
 
