@@ -553,7 +553,7 @@ app.post('/api/invoicecompliance', async (req, res) => {
     console.log('compliance_certificate 2:', compliance_certificate);
 
 
-    const compliance_certificate3 = replace(req.body.compliance_certificate, '\r', '');
+    const compliance_certificate3 = req.body.compliance_certificate;
 
     console.log('compliance_certificate 3:', compliance_certificate3);
     egs.set({ compliance_certificate: compliance_certificate3 });
