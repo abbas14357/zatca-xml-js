@@ -509,7 +509,7 @@ app.post('/api/signinvoice', async (req, res) => {
 
 app.post('/api/invoicecompliance', async (req, res) => {
   try {
-    console.log('invoice compliance body:', req.body.compliance_certificate);
+    console.log('invoice compliance body:', req.body);
 
     const egsunit: EGSUnitInfo = {
       uuid: req.body.uuid as string,
