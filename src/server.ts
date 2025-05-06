@@ -535,28 +535,16 @@ app.post('/api/invoicecompliance', async (req, res) => {
 
     // Inject cert data into EGS if available
     if (req.body.private_key) {
-      egs.set({ private_key: req.body.private_key });
+      egs.set({ private_key: replace(req.body.private_key, '\r', '') });
     }
 
     if (req.body.csr) {
-      egs.set({ csr: req.body.csr });
+      egs.set({ csr: replace(req.body.csr, '\r', '') });
     }
 
-    // if (req.body.compliance_certificate) {
-    //   egs.set({ compliance_certificate: req.body.compliance_certificate });
-    // }
-
-    const compliance_certificate = "-----BEGIN CERTIFICATE-----\n" +
-      "MIICNjCCAdygAwIBAgIGAZagcaSJMAoGCCqGSM49BAMCMBUxEzARBgNVBAMMCmVJbnZvaWNpbmcwHhcNMjUwNTA1MTIzNTE5WhcNMzAwNTA0MjEwMDAwWjBWMRYwFAYDVQQDDA1FR1MxLTk2OTI4NDEwMRcwFQYDVQQLDA5NeSBCcmFuY2ggTmFtZTEWMBQGA1UECgwNV2VzYW0gQWx6YWhpcjELMAkGA1UEBhMCU0EwVjAQBgcqhkjOPQIBBgUrgQQACgNCAATpbLwXrITSvBnOePllbPD4uJkI41woQXzT5SXiYfgPt38T8vvEZpnTmTngb1A+bstPVheTtfYo0QSp1esSiKPHo4HZMIHWMAwGA1UdEwEB/wQCMAAwgcUGA1UdEQSBvTCBuqSBtzCBtDFNMEsGA1UEBAxEMS1NdWx0aS1UZWNobm98Mi1NVUxUSS1URUNITk98My1mMmU0M2U2My0wMjZlLTRhYTUtYWZiOC1iYmFhMjEwNGVkMjExHzAdBgoJkiaJk/IsZAEBDA8zOTk5OTk5OTk5MDAwMDMxDTALBgNVBAwMBDAxMDAxJDAiBgNVBBoMGzAwMDAgS2luZyBGYWhhaGQgc3QsIEtob2JhcjENMAsGA1UEDwwERm9vZDAKBggqhkjOPQQDAgNIADBFAiEAkIK5SwjSdrNYm4OtQwsMXvfN0BZREfv9zkE64MM9/i4CIEZ+7JO9FwE+cFSyjpCRNbTtInqmZzqFQ3dAD46k+Ta/\n" +
-      "-----END CERTIFICATE-----";
-    
-    console.log('compliance_certificate 2:', compliance_certificate);
-
-
-    const compliance_certificate3 = replace(req.body.compliance_certificate, '\r', '');
-
-    console.log('compliance_certificate 3:', compliance_certificate3);
-    egs.set({ compliance_certificate: compliance_certificate3 });
+    if (req.body.compliance_certificate) {
+      egs.set({ compliance_certificate: replace(req.body.compliance_certificate, '\r', '') });
+    }
 
     if (req.body.compliance_api_secret) {
       egs.set({ compliance_api_secret: req.body.compliance_api_secret });
