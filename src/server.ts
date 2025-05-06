@@ -552,10 +552,11 @@ app.post('/api/invoicecompliance', async (req, res) => {
     
     console.log('compliance_certificate 2:', compliance_certificate);
 
+
     const compliance_certificate3 = replace(req.body.compliance_certificate, '\r', '');
 
     console.log('compliance_certificate 3:', compliance_certificate3);
-    egs.set({ compliance_certificate: req.body.compliance_certificate3 });
+    egs.set({ compliance_certificate: compliance_certificate3 });
 
     if (req.body.compliance_api_secret) {
       egs.set({ compliance_api_secret: req.body.compliance_api_secret });
