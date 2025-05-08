@@ -492,7 +492,7 @@ app.post('/api/signinvoice', async (req, res) => {
     // Sign invoice
     const { signed_invoice_string, invoice_hash, qr } = egs.signInvoice(invoice, false);
 
-    console.log('signed_invoice_string:', signed_invoice_string);
+    // console.log('signed_invoice_string:', signed_invoice_string);
 
     res.json({
       status: 'OK',
