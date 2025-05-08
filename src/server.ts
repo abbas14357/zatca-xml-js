@@ -475,17 +475,13 @@ app.post('/api/signinvoice', async (req, res) => {
     const invoice = new ZATCASimplifiedTaxInvoice({
       props: {
         egs_info: egsunit,
-        invoice_counter_number: 1,
-        invoice_serial_number: "EGS1-886431145-1",
-        issue_date: "2025-05-02",
-        issue_time: "14:40:40",
-        customer_name: "Cash Customer",
-        previous_invoice_hash: "NWZlY2ViNjZmZmM4NmYzOGQ5NTI3ODZjNmQ2OTZjNzljMmRiYzIzOWRkNGU5MWI0NjcyOWQ3M2EyN2ZiNTdlOQ==",
-        line_items: [
-          line_item,
-          line_item,
-          line_item
-        ]
+        invoice_counter_number: req.body.invoice_counter_number,
+        invoice_serial_number: req.body.invoice_serial_number,
+        issue_date: req.body.issue_date,
+        issue_time: req.body.issue_time,
+        customer_name: req.body.customer_name,
+        previous_invoice_hash: req.body.previous_invoice_hash,
+        line_items: req.body.invoice_lines
       }
     });
 
