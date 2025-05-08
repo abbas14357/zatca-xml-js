@@ -576,6 +576,74 @@ app.post('/api/invoicecompliance', async (req, res) => {
   }
 });
 
+app.post('/api/invoicereporting', async (req, res) => {
+  try {
+    console.log('invoice reporting body test:', req.body.compliance_certificate);
+
+    const egsunit: EGSUnitInfo = {
+      uuid: req.body.uuid as string,
+      custom_id: req.body.custom_id as string,
+      model: req.body.model as string,
+      CRN_number: req.body.crn as string,
+      VAT_name: req.body.vat_name as string,
+      VAT_number: req.body.vat_number as string,
+      location: {
+        city: req.body.city as string,
+        city_subdivision: req.body.subdivision as string,
+        street: req.body.street as string,
+        plot_identification: req.body.plot as string,
+        building: req.body.building as string,
+        postal_zone: req.body.postal as string,
+      },
+      branch_name: req.body.branch_name as string,
+      branch_industry: req.body.industry as string
+    };
+
+    const egs = new EGS(egsunit);
+
+    // Inject cert data into EGS if available
+    if (req.body.private_key) {
+      egs.set({ private_key: replace(req.body.private_key, '\r', '') });
+    }
+
+    if (req.body.csr) {
+      egs.set({ csr: replace(req.body.csr, '\r', '') });
+    }
+
+    if (req.body.compliance_certificate) {
+      egs.set({ compliance_certificate: replace(req.body.compliance_certificate, '\r', '') });
+    }
+
+    if (req.body.compliance_api_secret) {
+      egs.set({ compliance_api_secret: req.body.compliance_api_secret });
+    }
+
+    const invoice_hash = req.body.invoice_hash;
+    const sign_invpoice_p = req.body.sign_invpoice; 
+
+    // Check invoice compliance
+    const complience_response = await egs.reportInvoice(sign_invpoice_p, invoice_hash);
+    
+    
+    
+    const rep_status = complience_response.reportingStatus;
+    const rep_result = complience_response.validationResults;
+
+    console.log('reportingStatus:', rep_status);
+
+    res.json({
+
+      compliance_reporting_status: rep_status,
+      compliance_validation_result: JSON.stringify(rep_result)
+
+    });
+
+  } catch (err: any) {
+    console.error('API error:', err);
+    res.status(500).json({ status: 'error', message: err.message || 'Internal Server Error' });
+  }
+});
+
 app.listen(port, () => {
   console.log(`API Server running at http://localhost:${port}`);
 });
