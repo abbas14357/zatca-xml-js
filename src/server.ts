@@ -449,20 +449,6 @@ app.post('/api/signinvoice', async (req, res) => {
       egs.set({ production_certificate: req.body.production_certificate });
     }
 
-    // Sample line item
-    const line_item: ZATCASimplifiedInvoiceLineItem = {
-      id: "1",
-      name: "TEST NAME",
-      quantity: 5,
-      tax_exclusive_price: 10,
-      VAT_percent: 0.15,
-      other_taxes: [],
-      discounts: [
-        { amount: 2, reason: "A discount" },
-        { amount: 2, reason: "A second discount" }
-      ]
-    };
-
     // Sample Invoice
     const invoice = new ZATCASimplifiedTaxInvoice({
       props: {
@@ -522,20 +508,13 @@ app.post('/api/invoicecompliance', async (req, res) => {
     const egs = new EGS(egsunit);
 
     // Inject cert data into EGS if available
-    if (req.body.private_key) {
-      egs.set({ private_key: replace(req.body.private_key, '\r', '') });
+    
+    if (req.body.production_certificate) {
+      egs.set({ production_certificate: replace(req.body.production_certificate, '\r', '') });
     }
 
-    if (req.body.csr) {
-      egs.set({ csr: replace(req.body.csr, '\r', '') });
-    }
-
-    if (req.body.compliance_certificate) {
-      egs.set({ compliance_certificate: replace(req.body.compliance_certificate, '\r', '') });
-    }
-
-    if (req.body.compliance_api_secret) {
-      egs.set({ compliance_api_secret: req.body.compliance_api_secret });
+    if (req.body.production_api_secret) {
+      egs.set({ production_api_secret: req.body.production_api_secret });
     }
 
     const invoice_hash = req.body.invoice_hash;
