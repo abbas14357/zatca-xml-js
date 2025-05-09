@@ -239,7 +239,7 @@ app.post('/api/invoicecompliance', async (req, res) => {
     }
 
     const invoice_hash = req.body.invoice_hash;
-    const sign_invoice_p = req.body.sign_invpoice; 
+    const sign_invoice_p = req.body.sign_invoice; 
 
     // Check invoice compliance
     const complience_response = await egs.checkInvoiceCompliance(sign_invoice_p, invoice_hash);
@@ -307,7 +307,7 @@ app.post('/api/invoicereporting', async (req, res) => {
     }
 
     const invoice_hash = req.body.invoice_hash;
-    const sign_invoice_p = req.body.sign_invpoice; 
+    const sign_invoice_p = req.body.sign_invoice; 
 
     // Check invoice compliance
     const complience_response = await egs.reportInvoice(sign_invoice_p, invoice_hash);
