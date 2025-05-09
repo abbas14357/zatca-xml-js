@@ -205,9 +205,9 @@ export class EGS {
      * @returns Promise compliance data on success, throws error on fail.
      */
      async checkInvoiceCompliance(signed_invoice_string: string, invoice_hash: string): Promise<any> {
-        if(!this.egs_info.production_certificate || !this.egs_info.production_api_secret) throw new Error("EGS is missing a certificate/private key/api secret to check the invoice compliance.")
+        if(!this.egs_info.compliance_certificate || !this.egs_info.compliance_api_secret) throw new Error("EGS is missing a certificate/private key/api secret to check the invoice compliance.")
 
-        return await this.api.compliance(this.egs_info.production_certificate, this.egs_info.production_api_secret).checkInvoiceCompliance(
+        return await this.api.compliance(this.egs_info.compliance_certificate, this.egs_info.compliance_api_secret).checkInvoiceCompliance(
             signed_invoice_string,
             invoice_hash,
             this.egs_info.uuid

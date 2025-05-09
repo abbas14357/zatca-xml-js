@@ -509,12 +509,12 @@ app.post('/api/invoicecompliance', async (req, res) => {
 
     // Inject cert data into EGS if available
     
-    if (req.body.production_certificate) {
-      egs.set({ production_certificate: replace(req.body.production_certificate, '\r', '') });
+    if (req.body.compliance_certificate) {
+      egs.set({ compliance_certificate: replace(req.body.compliance_certificate, '\r', '') });
     }
 
-    if (req.body.production_api_secret) {
-      egs.set({ production_api_secret: req.body.production_api_secret });
+    if (req.body.compliance_api_secret) {
+      egs.set({ compliance_api_secret: req.body.compliance_api_secret });
     }
 
     const invoice_hash = req.body.invoice_hash;
@@ -545,7 +545,7 @@ app.post('/api/invoicecompliance', async (req, res) => {
 
 app.post('/api/invoicereporting', async (req, res) => {
   try {
-    console.log('invoice reporting body test:', req.body.compliance_certificate);
+    console.log('invoice reporting body test:', req.body.production_certificate);
 
     const egsunit: EGSUnitInfo = {
       uuid: req.body.uuid as string,
