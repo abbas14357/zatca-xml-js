@@ -101,20 +101,14 @@ app.post('/api/issueproductioncert', async (req, res) => {
         postal_zone: req.body.postal as string,
       },
       branch_name: req.body.branch_name as string,
-      branch_industry: req.body.industry as string
+      branch_industry: req.body.industry as string,
+      
     };
 
     const egs = new EGS(egsunit);
 
     // Inject cert data into EGS if available
-    if (req.body.private_key) {
-      egs.set({ private_key: req.body.private_key });
-    }
-
-    if (req.body.csr) {
-      egs.set({ csr: req.body.csr });
-    }
-
+    
     if (req.body.compliance_certificate) {
       egs.set({ compliance_certificate: req.body.compliance_certificate });
     }
