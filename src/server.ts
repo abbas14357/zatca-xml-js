@@ -445,16 +445,8 @@ app.post('/api/signinvoice', async (req, res) => {
       egs.set({ private_key: req.body.private_key });
     }
 
-    if (req.body.csr) {
-      egs.set({ csr: req.body.csr });
-    }
-
-    if (req.body.compliance_certificate) {
-      egs.set({ compliance_certificate: req.body.compliance_certificate });
-    }
-
-    if (req.body.compliance_api_secret) {
-      egs.set({ compliance_api_secret: req.body.compliance_api_secret });
+    if (req.body.production_certificate) {
+      egs.set({ production_certificate: req.body.production_certificate });
     }
 
     // Sample line item
@@ -486,7 +478,7 @@ app.post('/api/signinvoice', async (req, res) => {
     });
 
     // Sign invoice
-    const { signed_invoice_string, invoice_hash, qr } = egs.signInvoice(invoice, false);
+    const { signed_invoice_string, invoice_hash, qr } = egs.signInvoice(invoice, true);
 
     // console.log('signed_invoice_string:', signed_invoice_string);
 
